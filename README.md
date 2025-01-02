@@ -1,2 +1,2 @@
 A calculator with the added functions of modulo, square root, power of and factor.
-The error handling of this project is implemented with flex and bison. Glade is used for GUI.
+The error handling and the calculations of this project are implemented with flex and bison (tools known in the field of Compilation). Glade is used for GUI.
