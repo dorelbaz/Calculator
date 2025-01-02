@@ -74,8 +74,10 @@ const char *buttons[] = {
     "=" 
 };
 
-// gcc -o calc Main.c -Wall `pkg-config --cflags --libs gtk+-3.0` -export-dynamic
 
+/*
+    Main function that launches the Calculator's GUI.
+*/
 int main (int argc, char **argv)
 {
     gtk_init(&argc, &argv);
@@ -101,14 +103,25 @@ int main (int argc, char **argv)
     return EXIT_SUCCESS;
 }
 
-
+/*
+    Takes user input, formats it and displays it or displays an error message. 
+*/
 void on_Button_Clicked(GtkButton *button)
 {
     const gchar *button_text = gtk_button_get_label(button);
+
+    // Converts user input into its enum value.
     int button_value = select_OP(button_text);
 
+    // Formats user input.
     set_Expression(button_value);
 
+    /*
+        Displays:
+        an error message if an error has occured,
+        result of expression if '=' has been pressed
+        or the expression itself.
+    */
     if (error)
     {
         gtk_label_set_text(Display1, error_Message);
@@ -128,6 +141,9 @@ void on_Button_Clicked(GtkButton *button)
     result = 0;
 }
 
+/*
+    Converts user input from its GTK gchar value to its corresponding enum value.
+*/
 enum button_values select_OP(const gchar *text)
 {
     for (int i = Zero; i < Equals; i++)
@@ -140,10 +156,17 @@ enum button_values select_OP(const gchar *text)
     return Equals;
 }
 
+/*
+    Sets the expression to display accroding to the user input.
+*/
 void set_Expression(enum button_values val)
 {
     switch(val)
     {
+        /*
+            Concats to the expression the value of pi (3.14), if the expression's current length + pi's length (4) 
+            doesn't exceed the maximum length.
+        */ 
         case Pi:
             if (iexpr + strlen("3.14") < EXPRESSION_MAX_LENGTH)
             {
@@ -156,6 +179,9 @@ void set_Expression(enum button_values val)
             }
             break;
 
+        /*
+            Deletes the last character in the expression.
+        */ 
         case Bspace:
             if (iexpr)
             {
@@ -164,6 +190,7 @@ void set_Expression(enum button_values val)
             }
             break;
 
+        // Resets the expression.
         case Clr:
             strncpy(expression, "\0", EXPRESSION_MAX_LENGTH+1);
             gtk_label_set_text(Display2, expression);
@@ -171,6 +198,9 @@ void set_Expression(enum button_values val)
             iexpr = 0;
             break;
 
+        /*
+            Concats to the expression "mod(" ( x modulo(y) ).
+        */ 
         case Mod:
             if (iexpr + strlen("mod(") < EXPRESSION_MAX_LENGTH)
             {
@@ -183,6 +213,9 @@ void set_Expression(enum button_values val)
             }
             break;                        
 
+        /*
+            Concats to the expression "sqrt(" (square root of (n)).
+        */ 
         case Sqrt:
             if (iexpr + strlen("sqrt(") < EXPRESSION_MAX_LENGTH)
             {
@@ -209,6 +242,9 @@ void set_Expression(enum button_values val)
             execute();
             break;
 
+        /*
+            Concats to the expression "^" (x to the power of y), 0-9, barrackets or any other arithmetical sign.
+        */ 
         default:
             if (iexpr < EXPRESSION_MAX_LENGTH)
             {
@@ -234,11 +270,15 @@ void set_Expression(enum button_values val)
     }
 }
 
+/*
+    Displays the evaluation of a none-null, valid expression.
+*/
 void format_Result()
 {
     char result_expression[FLT_MAX_DIGIT_NUMBER];
     strncpy(result_expression, "\0", FLT_MAX_DIGIT_NUMBER);
 
+    // Converts the result from a number (double or long) to a string.
     if (strcmp(expression,"\0"))
     {
         if (roundf(result) != result)
@@ -254,6 +294,9 @@ void format_Result()
     gtk_label_set_text(Display2, result_expression);
 }
 
+/*
+    Sets the GUI's components.
+*/
 void set_GUI()
 {
     window = GTK_WIDGET(gtk_builder_get_object(builder, "Calculator_Interface"));
