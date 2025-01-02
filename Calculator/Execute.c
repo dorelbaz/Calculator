@@ -1,5 +1,9 @@
 #include "Data_File.h"
 
+
+/*
+    Furthers the expression to the lexer and the parser for examination and execution.
+*/
 void execute()
 {
     yyin = fopen("input.txt", "r");
