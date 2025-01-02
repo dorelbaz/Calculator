@@ -1,3 +1,8 @@
+/*
+    The lexer is responsible for tokenizing (refering to the return statements) the expression. 
+    It communicates back and forth with the parser.
+*/
+
 %{
 
 #include "Data_File.h"
